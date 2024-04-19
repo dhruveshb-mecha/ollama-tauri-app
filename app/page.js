@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import Input from "./input";
 import { AiIcon, UserIcon } from "./icons";
+import { fetch, Body } from "@tauri-apps/api/http";
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
@@ -15,32 +16,32 @@ export default function Home() {
 
   useEffect(scrollToBottom, [messages]);
 
-  const handleSend = () => {
-    if (message !== "") {
-      setMessages([...messages, { role: "user", content: message }]); // Update the messages
+  const handleSend = async () => {
+    const payload = Body.json({
+      model: "tinyllama",
+      stream: false,
+      messages: [{ role: "user", content: message }],
+    });
 
-      fetch("http://localhost:11434/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "tinyllama",
-          stream: false,
-          messages: [{ role: "user", content: message }],
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { role: "ai", content: data.message.content },
-          ]); // Add the new response to the array
-          setMessage(""); // Clear the input field
-        })
-        .catch((error) => {
-          console.error("Error:", error);
+    if (message !== "") {
+      setMessages((prevMessages) => [...prevMessages, { role: "user", content: message }]); // Update the messages
+      try {
+        const response = await fetch("http://localhost:11434/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: payload,
         });
+        const data = await response.data;
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { role: "ai", content: data.message.content },
+        ]); // Add the new response to the array
+        setMessage(""); // Clear the input field
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
