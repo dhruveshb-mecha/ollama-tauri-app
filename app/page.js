@@ -18,7 +18,7 @@ export default function Home() {
 
   const handleSend = async () => {
     const payload = Body.json({
-      model: "tinyllama",
+      model: "mecha-llm",
       stream: false,
       messages: [{ role: "user", content: message }],
     });
