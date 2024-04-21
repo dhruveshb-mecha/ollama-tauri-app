@@ -2,7 +2,6 @@
 import "regenerator-runtime/runtime";
 import { useState, useEffect, useRef } from "react";
 import Script from "next/script";
-import http from "http";
 
 import { AiIcon, UserIcon, RecordIcon, SpeechButton, Spinner } from "./icons";
 import OpenAI from "openai";
@@ -13,13 +12,6 @@ import SpeechRecognition, {
 import { useLongPress } from "@uidotdev/usehooks";
 
 export default function Home() {
-  const openai = new OpenAI({
-    apiKey: process.env["OPENAI_API_KEY"],
-    dangerouslyAllowBrowser: true,
-  });
-  //console api key
-  console.log(process.env["OPENAI_API_KEY"]);
-
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -55,36 +47,49 @@ export default function Home() {
 
   const attrs = useLongPress(
     (event) => {
-      console.log("Pressing");
+      console.log("Long press initiated");
       SpeechRecognition.startListening();
+      console.log("Speech recognition started");
     },
     {
       onStart: (event) => {
-        console.log("Press started");
+        console.log("Long press started");
       },
       onFinish: (event) => {
-        console.log("Message: ", transcript);
+        console.log("Long press finished");
+        console.log("Transcript: ", transcript);
         setMessage(transcript);
         SpeechRecognition.stopListening();
-      // Send the transcript as a message only if isSending is false
+        console.log("Speech recognition stopped");
+        // Send the transcript as a message only if isSending is false
         if (!isSending) {
+          console.log("Sending message: ", transcript);
           handleSend(transcript);
         }
       },
       onCancel: (event) => {
-        console.log("Press cancelled");
+        console.log("Long press cancelled");
         SpeechRecognition.stopListening(); // Stop listening if the press is cancelled
+        console.log("Speech recognition stopped due to cancellation");
       },
-      threshold: 500,
+      threshold: 1000,
     }
   );
 
   const handleSend = async (message) => {
-    if (isSending) return; // If an API call is already in progress, don't start a new one
+    if (isSending) {
+      console.log("Previous API call still in progress, skipping this message");
+      return; // If an API call is already in progress, don't start a new one
+    }
+
+    // return if the message is empty
+    if (message === "") {
+      console.log("Message is empty, skipping the API call");
+      return;
+    }
 
     const payload = {
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: message }],
+      prompt: message,
     };
 
     if (message !== "") {
@@ -92,20 +97,39 @@ export default function Home() {
         ...prevMessages,
         { role: "user", content: message },
       ]); // Update the messages
+      console.log("Message added to the chat");
       try {
         setIsSending(true); // Set the flag to true to indicate that an API call is in progress
-        const chatCompletion = await openai.chat.completions.create(payload);
-        console.log(chatCompletion);
+        console.log("API call started");
+        const response = await fetch(
+          "https://mecha-cf-llm.dhruveshb.workers.dev",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              // allow CROSS origin
+              "Access-Control-Allow-Origin": "*",
+              "mode": "no-cors",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+        const data = await response.json();
+        console.log("API Response =>", data);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { role: "ai", content: chatCompletion.choices[0].message.content },
+          { role: "ai", content: data.response },
         ]); // Add the new response to the array
+        console.log("AI response added to the chat");
         setMessage(""); // Clear the input field
-        handlePlay(chatCompletion.choices[0].message.content); // Convert the AI's response to speech
+        console.log("Input field cleared");
+        handlePlay(data.response); // Convert the AI's response to speech
+        console.log("AI response converted to speech");
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error during API call:", error);
       } finally {
         setIsSending(false); // Reset the flag after the API call is finished
+        console.log("API call finished");
       }
     }
   };

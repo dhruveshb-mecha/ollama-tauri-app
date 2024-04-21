@@ -63,7 +63,6 @@ export function RecordIcon(props) {
 }
 
 export const SpeechButton = (props) => {
-  console.log("Mic Button props ==>", props);
   return (
     <button
       onContextMenu={(e) => e.preventDefault()}
