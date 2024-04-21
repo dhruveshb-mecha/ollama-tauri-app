@@ -50,7 +50,7 @@ export function RecordIcon(props) {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-8 h-8"
+        className="w-12 h-12"
       >
         <path
           strokeLinecap="round"
@@ -76,7 +76,7 @@ export const SpeechButton = (props) => {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-8 h-8"
+        className="w-12 h-12"
       >
         <path
           strokeLinecap="round"
@@ -91,7 +91,7 @@ export const SpeechButton = (props) => {
 export const Spinner = () => {
   return (
     <button type="button" className="bg-indigo-500 ..." disabled>
-      <svg className="animate-spin h-7 w-7 mr-3 ..." viewBox="0 0 24 24"></svg>
+      <svg className="animate-spin h-11 w-11 mr-3 ..." viewBox="0 0 24 24"></svg>
       Processing...
     </button>
   );
