@@ -15,8 +15,9 @@
       "http": {
         "all": true,
         "request": true,
-        "scope": ["http://localhost:11434/*"]
+        "scope": ["http://localhost:8787/*","https://mecha-cf-llm.dhruveshb.workers.dev/*"]
       }
+     
     },
     "bundle": {
       "active": true,

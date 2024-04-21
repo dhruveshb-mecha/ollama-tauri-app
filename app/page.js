@@ -17,26 +17,26 @@ export default function Home() {
   useEffect(scrollToBottom, [messages]);
 
   const handleSend = async () => {
-    const payload = Body.json({
-      model: "mecha-llm",
-      stream: false,
-      messages: [{ role: "user", content: message }],
-    });
-
     if (message !== "") {
-      setMessages((prevMessages) => [...prevMessages, { role: "user", content: message }]); // Update the messages
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: "user", content: message },
+      ]); // Update the messages
       try {
-        const response = await fetch("http://localhost:11434/api/chat", {
+        const response = await fetch("  https://mecha-cf-llm.dhruveshb.workers.dev/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: payload,
+          body: Body.json({
+            prompt: message,
+          }),
         });
+
         const data = await response.data;
         setMessages((prevMessages) => [
           ...prevMessages,
-          { role: "ai", content: data.message.content },
+          { role: "ai", content: data.response },
         ]); // Add the new response to the array
         setMessage(""); // Clear the input field
       } catch (error) {
