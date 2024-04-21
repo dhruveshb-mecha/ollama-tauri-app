@@ -38,7 +38,7 @@ export function RecordIcon(props) {
   return (
     <button
       onContextMenu={(e) => e.preventDefault()}
-      className={`p-3 rounded-full ${
+      className={`p-5 rounded-full ${
         listening === "true" ? "bg-green-400" : "bg-gray-200"
       } hover:bg-gray-300 focus:outline-none`}
       {...props}
@@ -50,7 +50,7 @@ export function RecordIcon(props) {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-12 h-12"
+        className="w-10 h-10"
       >
         <path
           strokeLinecap="round"
@@ -66,7 +66,7 @@ export const SpeechButton = (props) => {
   return (
     <button
       onContextMenu={(e) => e.preventDefault()}
-      className={`pointer-events-none p-3 rounded-full focus:outline-none  focus:pointer-events-auto
+      className={`pointer-events-none p-5 rounded-full focus:outline-none  focus:pointer-events-auto
     ${props.listening ? "bg-green-300" : "bg-gray-200"}
   `}
     >
@@ -76,7 +76,7 @@ export const SpeechButton = (props) => {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-12 h-12"
+        className="w-10 h-10"
       >
         <path
           strokeLinecap="round"
@@ -91,7 +91,7 @@ export const SpeechButton = (props) => {
 export const Spinner = () => {
   return (
     <button type="button" className="bg-indigo-500 ..." disabled>
-      <svg className="animate-spin h-11 w-11 mr-3 ..." viewBox="0 0 24 24"></svg>
+      <svg className="animate-spin h-10 w-10 mr-3 ..." viewBox="0 0 24 24"></svg>
       Processing...
     </button>
   );
