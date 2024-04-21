@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Script from "next/script";
 
 import { AiIcon, UserIcon, RecordIcon, SpeechButton, Spinner } from "./icons";
-import OpenAI from "openai";
+
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -137,7 +137,7 @@ export default function Home() {
         }
       />
 
-      <main className="flex flex-col items-center justify-between w-full h-screen bg-white">
+      <main className="flex flex-col items-center justify-between h-screen bg-white">
         <div className="mb-auto overflow-auto w-full">
           <div className="m-2">
             {messages.map((message, index) => (
