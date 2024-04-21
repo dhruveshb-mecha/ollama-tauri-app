@@ -31,7 +31,7 @@ export default function Home() {
     console.log("Message: ", message);
     if (responsiveVoice) {
       console.log("ResponsiveVoice loaded");
-      responsiveVoice.speak(message, "UK English Male");
+      responsiveVoice.speak(message, "US English Female");
     } else {
       console.error("ResponsiveVoice not loaded");
     }
@@ -88,10 +88,6 @@ export default function Home() {
       return;
     }
 
-    const payload = {
-      prompt: message,
-    };
-
     if (message !== "") {
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -102,16 +98,11 @@ export default function Home() {
         setIsSending(true); // Set the flag to true to indicate that an API call is in progress
         console.log("API call started");
         const response = await fetch(
-          "https://mecha-cf-llm.dhruveshb.workers.dev",
+          `https://mecha-cf-llm.dhruveshb.workers.dev?prompt=${encodeURIComponent(
+            message
+          )}`,
           {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              // allow CROSS origin
-              "Access-Control-Allow-Origin": "*",
-              "mode": "no-cors",
-            },
-            body: JSON.stringify(payload),
+            method: "GET",
           }
         );
         const data = await response.json();
